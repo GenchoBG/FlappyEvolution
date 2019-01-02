@@ -6,8 +6,7 @@ public class BirdController : MonoBehaviour {
 
     private Rigidbody rb;
 
-    public float JumpingForce = 900f;
-    public float RetardedJumpingForce = 500;
+    public float JumpingForce = 300f;
 
     public bool Alive { get; set; }
 
@@ -32,9 +31,9 @@ public class BirdController : MonoBehaviour {
         this.rb.AddForce(Vector3.up * this.JumpingForce);
     }
 
-    void OnCollisionEnter(Collision other)
+    void OnTriggerEnter(Collider other)
     {
-        if (other.collider.CompareTag("Pillar"))
+        if (other.CompareTag("Pillar"))
         {
             this.Alive = false;
             Destroy(this.gameObject);
