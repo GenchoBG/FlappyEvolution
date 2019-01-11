@@ -28,14 +28,41 @@ namespace SimpleNeuralNetwork
             this.InitializeBiases();
         }
 
-        public int FeedForward(ICollection<double> input)
+        public IList<double> FeedForward(ICollection<double> input)
         {
             if (input.Count != this.inputsCount)
             {
                 throw new ArgumentException("Invalid number of input arguments passed");
             }
 
-            throw new NotImplementedException();
+            var inputs = input.ToList();
+            for (int layer = 0; layer < this.hiddenLayersCount + 1; layer++)
+            {
+                var layerWeights = this.weights[layer];
+                var layerBiases = this.biases[layer];
+                var layerOutput = new List<double>();
+
+                for (int neuronIndex = 0; neuronIndex < layerWeights.Count; neuronIndex++)
+                {
+                    var neuronWeights = layerWeights[neuronIndex];
+                    var neuronBias = layerBiases[neuronIndex];
+
+                    var neuronOutput = 0D;
+
+                    for (int weightIndex = 0; weightIndex < neuronWeights.Count; weightIndex++)
+                    {
+                        neuronOutput += neuronWeights[weightIndex] * inputs[weightIndex];
+                    }
+                    neuronOutput += neuronBias;
+
+
+                    layerOutput.Add(neuronOutput);
+                }
+
+                inputs = layerOutput;
+            }
+
+            return inputs;
         }
 
         private void InitializeBiases()
@@ -44,7 +71,7 @@ namespace SimpleNeuralNetwork
             {
                 var currentLayerBiases = new List<double>();
 
-                var currentLayerNeurons = this.GetLayerNeurons(weightsIndex);
+                var currentLayerNeurons = this.GetLayerNeuronsCount(weightsIndex);
 
                 for (int neuronIndex = 0; neuronIndex < currentLayerNeurons; neuronIndex++)
                 {
@@ -61,8 +88,8 @@ namespace SimpleNeuralNetwork
             {
                 var currentLayerWeights = new List<IList<double>>();
 
-                var currentLayerNeurons = this.GetLayerNeurons(weightsIndex);
-                var prevLayerNeurons = this.GetPrevLayerNeurons(weightsIndex);
+                var currentLayerNeurons = this.GetLayerNeuronsCount(weightsIndex);
+                var prevLayerNeurons = this.GetPrevLayerNeuronsCount(weightsIndex);
 
                 for (int neuronIndex = 0; neuronIndex < currentLayerNeurons; neuronIndex++)
                 {
@@ -85,7 +112,7 @@ namespace SimpleNeuralNetwork
             return result;
         }
 
-        private int GetPrevLayerNeurons(int weightsIndex)
+        private int GetPrevLayerNeuronsCount(int weightsIndex)
         {
             if (weightsIndex == 0)
             {
@@ -95,7 +122,7 @@ namespace SimpleNeuralNetwork
             return this.hiddenLayersCounts[weightsIndex - 1];
         }
 
-        private int GetLayerNeurons(int weightsIndex)
+        private int GetLayerNeuronsCount(int weightsIndex)
         {
             if (weightsIndex == this.hiddenLayersCount)
             {

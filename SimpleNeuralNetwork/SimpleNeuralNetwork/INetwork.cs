@@ -4,6 +4,6 @@ namespace SimpleNeuralNetwork
 {
     public interface INetwork
     {
-        int FeedForward(ICollection<double> input);
+        IList<double> FeedForward(ICollection<double> input);
     }
 }

@@ -12,7 +12,9 @@ namespace SimpleNeuralNetwork
         {
             var test = new Network(2, new[] { 5 }, 1);
 
-            var result = test.FeedForward()
+            var result = test.FeedForward(new double[] { 1, 2 });
+
+            Console.WriteLine(string.Join(" ", result));
         }
     }
 }
