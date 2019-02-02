@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PillarMovementScript : MonoBehaviour
 {
-    public float PillarSpeed = 5;
+    public float PillarSpeed = 10;
 
     
     void Update()
