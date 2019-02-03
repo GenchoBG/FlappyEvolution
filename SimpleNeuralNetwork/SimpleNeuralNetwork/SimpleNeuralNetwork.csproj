@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{ECD5018B-17DC-4997-85B3-DA8E8A5DB3AE}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>SimpleNeuralNetwork</RootNamespace>
     <AssemblyName>SimpleNeuralNetwork</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>

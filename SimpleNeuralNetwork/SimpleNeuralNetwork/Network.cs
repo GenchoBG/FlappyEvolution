@@ -12,9 +12,10 @@ namespace SimpleNeuralNetwork
         private readonly int outputsCount;
         private readonly IList<IList<IList<double>>> weights;
         private readonly IList<IList<double>> biases;
+        private readonly Func<double, double> activationFunction;
         private readonly Random random;
 
-        public Network(int inputsCount, ICollection<int> hiddenLayersCounts, int outputsCount)
+        public Network(int inputsCount, ICollection<int> hiddenLayersCounts, int outputsCount, Func<double, double> activationFuction = null)
         {
             this.inputsCount = inputsCount;
             this.outputsCount = outputsCount;
@@ -23,6 +24,8 @@ namespace SimpleNeuralNetwork
             this.weights = new List<IList<IList<double>>>();
             this.biases = new List<IList<double>>();
             this.random = new Random();
+
+            this.activationFunction = activationFuction ?? this.Sigmoid;
 
             this.InitializeWeights();
             this.InitializeBiases();
@@ -54,9 +57,8 @@ namespace SimpleNeuralNetwork
                         neuronOutput += neuronWeights[weightIndex] * inputs[weightIndex];
                     }
                     neuronOutput += neuronBias;
-
-
-                    layerOutput.Add(neuronOutput);
+                   
+                    layerOutput.Add(this.activationFunction(neuronOutput));
                 }
 
                 inputs = layerOutput;
@@ -130,6 +132,11 @@ namespace SimpleNeuralNetwork
             }
 
             return this.hiddenLayersCounts[weightsIndex];
+        }
+
+        private double Sigmoid(double value)
+        {
+            return 1 / (1 + Math.Exp(-value));
         }
     }
 }
