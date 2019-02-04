@@ -1,29 +1,24 @@
-﻿using System;
+﻿using SimpleNeuralNetwork.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using SimpleNeuralNetwork.Interfaces;
 
 namespace SimpleNeuralNetwork
 {
     public class Network : INetwork
     {
-        private readonly int inputsCount;
-        private readonly int hiddenLayersCount;
-        private readonly IList<int> hiddenLayersCounts;
-        private readonly int outputsCount;
-        private readonly IList<IList<IList<double>>> weights;
-        private readonly IList<IList<double>> biases;
         private readonly Func<double, double> activationFunction;
-        private readonly Random random;
 
         public Network(int inputsCount, ICollection<int> hiddenLayersCounts, int outputsCount, Func<double, double> activationFuction = null)
         {
-            this.inputsCount = inputsCount;
-            this.outputsCount = outputsCount;
-            this.hiddenLayersCount = hiddenLayersCounts.Count;
-            this.hiddenLayersCounts = hiddenLayersCounts.ToList();
-            this.weights = new List<IList<IList<double>>>();
-            this.biases = new List<IList<double>>();
-            this.random = new Random();
+            this.InputsCount = inputsCount;
+            this.OutputsCount = outputsCount;
+            this.HiddenLayersCount = hiddenLayersCounts.Count;
+            this.HiddenLayersCounts = hiddenLayersCounts.ToList();
+            this.Weights = new List<IList<IList<double>>>();
+            this.Biases = new List<IList<double>>();
+            this.Random = new Random();
 
             this.activationFunction = activationFuction ?? this.Sigmoid;
 
@@ -31,18 +26,27 @@ namespace SimpleNeuralNetwork
             this.InitializeBiases();
         }
 
+        protected readonly IList<IList<IList<double>>> Weights;
+        protected readonly IList<IList<double>> Biases;
+        protected Random Random { get; }
+
+        public int InputsCount { get; }
+        public int HiddenLayersCount { get; }
+        public IList<int> HiddenLayersCounts { get; }
+        public int OutputsCount { get; }
+
         public IList<double> FeedForward(ICollection<double> input)
         {
-            if (input.Count != this.inputsCount)
+            if (input.Count != this.InputsCount)
             {
                 throw new ArgumentException("Invalid number of input arguments passed");
             }
 
             var inputs = input.ToList();
-            for (int layer = 0; layer < this.hiddenLayersCount + 1; layer++)
+            for (int layer = 0; layer < this.HiddenLayersCount + 1; layer++)
             {
-                var layerWeights = this.weights[layer];
-                var layerBiases = this.biases[layer];
+                var layerWeights = this.Weights[layer];
+                var layerBiases = this.Biases[layer];
                 var layerOutput = new List<double>();
 
                 for (int neuronIndex = 0; neuronIndex < layerWeights.Count; neuronIndex++)
@@ -57,7 +61,7 @@ namespace SimpleNeuralNetwork
                         neuronOutput += neuronWeights[weightIndex] * inputs[weightIndex];
                     }
                     neuronOutput += neuronBias;
-                   
+
                     layerOutput.Add(this.activationFunction(neuronOutput));
                 }
 
@@ -69,7 +73,7 @@ namespace SimpleNeuralNetwork
 
         private void InitializeBiases()
         {
-            for (int weightsIndex = 0; weightsIndex < this.hiddenLayersCount + 1; weightsIndex++)
+            for (int weightsIndex = 0; weightsIndex < this.HiddenLayersCount + 1; weightsIndex++)
             {
                 var currentLayerBiases = new List<double>();
 
@@ -77,16 +81,16 @@ namespace SimpleNeuralNetwork
 
                 for (int neuronIndex = 0; neuronIndex < currentLayerNeurons; neuronIndex++)
                 {
-                    currentLayerBiases.Add(this.random.NextDouble(-2, 2));
+                    currentLayerBiases.Add(this.Random.NextDouble(-2, 2));
                 }
 
-                this.biases.Add(currentLayerBiases);
+                this.Biases.Add(currentLayerBiases);
             }
         }
 
         private void InitializeWeights()
         {
-            for (int weightsIndex = 0; weightsIndex < this.hiddenLayersCount + 1; weightsIndex++)
+            for (int weightsIndex = 0; weightsIndex < this.HiddenLayersCount + 1; weightsIndex++)
             {
                 var currentLayerWeights = new List<IList<double>>();
 
@@ -98,7 +102,7 @@ namespace SimpleNeuralNetwork
                     currentLayerWeights.Add(this.GenerateRandomWeights(prevLayerNeurons));
                 }
 
-                this.weights.Add(currentLayerWeights);
+                this.Weights.Add(currentLayerWeights);
             }
         }
 
@@ -108,7 +112,7 @@ namespace SimpleNeuralNetwork
 
             for (int i = 0; i < count; i++)
             {
-                result.Add(this.random.NextDouble(-2, 2));
+                result.Add(this.Random.NextDouble(-2, 2));
             }
 
             return result;
@@ -118,20 +122,20 @@ namespace SimpleNeuralNetwork
         {
             if (weightsIndex == 0)
             {
-                return this.inputsCount;
+                return this.InputsCount;
             }
 
-            return this.hiddenLayersCounts[weightsIndex - 1];
+            return this.HiddenLayersCounts[weightsIndex - 1];
         }
 
         private int GetLayerNeuronsCount(int weightsIndex)
         {
-            if (weightsIndex == this.hiddenLayersCount)
+            if (weightsIndex == this.HiddenLayersCount)
             {
-                return this.outputsCount;
+                return this.OutputsCount;
             }
 
-            return this.hiddenLayersCounts[weightsIndex];
+            return this.HiddenLayersCounts[weightsIndex];
         }
 
         private double Sigmoid(double value)

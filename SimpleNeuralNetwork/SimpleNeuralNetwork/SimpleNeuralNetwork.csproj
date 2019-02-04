@@ -46,11 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="INetwork.cs" />
+    <Compile Include="Interfaces\INetwork.cs" />
+    <Compile Include="Interfaces\ITrainableNetwork.cs" />
     <Compile Include="Network.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RandomExtensinos.cs" />
+    <Compile Include="Helpers\RandomExtensinos.cs" />
+    <Compile Include="TrainableNetwork.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

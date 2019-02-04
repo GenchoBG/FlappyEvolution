@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using SimpleNeuralNetwork;
+using SimpleNeuralNetwork.Interfaces;
 using UnityEngine;
 
 public class BirdController : MonoBehaviour
 {
-    private INetwork brain;
+    private ITrainableNetwork<TrainableNetwork> brain;
     private Rigidbody rb;
 
     public float JumpingForce = 300f;
@@ -16,7 +17,7 @@ public class BirdController : MonoBehaviour
     {
         //inputs are: vertical distance to top pipe, vertical distance to bottom pipe, horisontal distance to pipes, vertical velocity
         //output is one: should it jump
-        this.brain = new SimpleNeuralNetwork.Network(4, new List<int>() { 5 }, 1);
+        this.brain = new TrainableNetwork(4, new List<int>() { 5 }, 1).Crossover(new TrainableNetwork(4, new List<int>() { 5 }, 1));
         this.rb = this.GetComponent<Rigidbody>();
     }
 

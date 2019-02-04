@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SimpleNeuralNetwork
+namespace SimpleNeuralNetwork.Interfaces
 {
     public interface INetwork
     {
