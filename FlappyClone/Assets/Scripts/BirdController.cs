@@ -1,24 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using SimpleNeuralNetwork;
 using SimpleNeuralNetwork.Interfaces;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 public class BirdController : MonoBehaviour
 {
-    private ITrainableNetwork<TrainableNetwork> brain;
     private Rigidbody rb;
 
     public float JumpingForce = 300f;
 
     public bool Alive { get; set; }
 
+    public Stopwatch AliveTime { get; set; }
+    
+    public ITrainableNetwork Brain { get; set; }
+
     void Start()
     {
         //inputs are: vertical distance to top pipe, vertical distance to bottom pipe, horisontal distance to pipes, vertical velocity
         //output is one: should it jump
-        this.brain = new TrainableNetwork(4, new List<int>() { 5 }, 1).Crossover(new TrainableNetwork(4, new List<int>() { 5 }, 1));
         this.rb = this.GetComponent<Rigidbody>();
+        this.Alive = true;
+        this.AliveTime = new Stopwatch();
+        this.AliveTime.Start();
     }
 
     void Update()
@@ -35,32 +42,43 @@ public class BirdController : MonoBehaviour
 
         if (!this.IsOnScreen())
         {
-            this.Alive = false;
-            Destroy(this.gameObject);
+            this.Die();
         }
 
-        var prediction = this.brain.FeedForward(new List<double> { verticalDistanceToTopPipe, verticalDistanceToBottomPipe, horizontalDistance, verticalVelocity })[0];
+        var prediction = this.Brain.FeedForward(new List<double> { verticalDistanceToTopPipe, verticalDistanceToBottomPipe, horizontalDistance, verticalVelocity })[0];
 
         if (prediction > 0.5)
         {
             this.Jump();
         }
-    }
-
-    void Jump()
-    {
-        this.rb.velocity = Vector3.one;
-        this.rb.AddForce(Vector3.up * this.JumpingForce);
+//
+//        if (Input.GetKeyDown(KeyCode.Space))
+//        {
+//            this.Jump();
+//        }
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Pillar"))
         {
-            Debug.Log("oba");
-            this.Alive = false;
-            Destroy(this.gameObject);
+            this.Die();
         }
+    }
+
+    private void Jump()
+    {
+        this.rb.velocity = Vector3.one;
+        this.rb.AddForce(Vector3.up * this.JumpingForce);
+    }
+
+    private void Die()
+    {
+        this.Alive = false;
+        this.AliveTime.Stop();
+        GameController.Instance.DeadBirds.Add(this.Brain, this.AliveTime.Elapsed);
+        GameController.Instance.UnregisterBird(this.gameObject);
+        Destroy(this.gameObject);
     }
 
     private bool IsOnScreen()

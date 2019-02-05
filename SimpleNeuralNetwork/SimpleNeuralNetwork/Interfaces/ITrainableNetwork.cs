@@ -1,8 +1,8 @@
 ﻿namespace SimpleNeuralNetwork.Interfaces
 {
-    public interface ITrainableNetwork<T> : INetwork
+    public interface ITrainableNetwork : INetwork
     {
         void Mutate(double rate);
-        T Crossover(T other);
+        ITrainableNetwork Crossover(ITrainableNetwork other);
     }
 }

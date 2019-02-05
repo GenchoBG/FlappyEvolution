@@ -5,7 +5,7 @@ using SimpleNeuralNetwork.Interfaces;
 
 namespace SimpleNeuralNetwork
 {
-    public class TrainableNetwork : Network, ITrainableNetwork<TrainableNetwork>
+    public class TrainableNetwork : Network, ITrainableNetwork
     {
         public TrainableNetwork(int inputsCount, ICollection<int> hiddenLayersCounts, int outputsCount, Func<double, double> activationFuction = null) : base(inputsCount, hiddenLayersCounts, outputsCount, activationFuction)
         {
@@ -21,10 +21,10 @@ namespace SimpleNeuralNetwork
                 {
                     for (int i = 0; i < neuronWeights.Count; i++)
                     {
-                        var chance = this.Random.NextDouble(0, 100);
+                        var chance = Network.Random.NextDouble(0, 100);
                         if (chance < rateInPercent)
                         {
-                            neuronWeights[i] += this.Random.NextDouble(-1, 1);
+                            neuronWeights[i] += Network.Random.NextDouble(-1, 1);
                         }
                     }
                 }
@@ -34,17 +34,17 @@ namespace SimpleNeuralNetwork
             {
                 for (int i = 0; i < layerBiases.Count; i++)
                 {
-                    var chance = this.Random.NextDouble(0, 100);
+                    var chance = Network.Random.NextDouble(0, 100);
                     if (chance < rateInPercent)
                     {
-                        layerBiases[i] += this.Random.NextDouble(-1, 1);
+                        layerBiases[i] += Network.Random.NextDouble(-1, 1);
                     }
                 }
             }
         }
 
         //for the sake of simplicity we crossover two NNs with identical structure and only adjust the weights and biases
-        public TrainableNetwork Crossover(TrainableNetwork other)
+        public ITrainableNetwork Crossover(ITrainableNetwork other)
         {
             var network = new TrainableNetwork(this.InputsCount, this.HiddenLayersCounts, this.OutputsCount);
 
@@ -54,12 +54,12 @@ namespace SimpleNeuralNetwork
                 {
                     for (int weightIndex = 0; weightIndex < this.Weights[layerIndex][neuronIndex].Count; weightIndex++)
                     {
-                        var copyWeights = this.Random.NextBool() ? this.Weights : other.Weights;
+                        var copyWeights = Network.Random.NextBool() ? this.Weights : other.Weights;
 
                         network.Weights[layerIndex][neuronIndex][weightIndex] = copyWeights[layerIndex][neuronIndex][weightIndex];
                     }
 
-                    var copyBiases = this.Random.NextBool() ? this.Biases : other.Biases;
+                    var copyBiases = Network.Random.NextBool() ? this.Biases : other.Biases;
 
                     network.Biases[layerIndex][neuronIndex] = copyBiases[layerIndex][neuronIndex];
                 }
