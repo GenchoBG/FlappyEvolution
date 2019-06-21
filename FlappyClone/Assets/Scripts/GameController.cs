@@ -4,16 +4,18 @@ using System.Linq;
 using SimpleNeuralNetwork;
 using SimpleNeuralNetwork.Interfaces;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class GameController : MonoBehaviour
 {
-    private List<GameObject> pillars;
-    private HashSet<GameObject> birds;
+    private ICollection<GameObject> pillars;
+    private ICollection<GameObject> birds;
 
     public GameObject BirdPrefab;
     public GameObject PillarPairPrefab;
-
+    public Text GenerationText;
+    
     public static GameController Instance { get; private set; }
 
     public Dictionary<ITrainableNetwork, TimeSpan> DeadBirds { get; set; }
@@ -82,6 +84,7 @@ public class GameController : MonoBehaviour
     private void NewGeneration()
     {
         this.Generation++;
+        this.GenerationText.text = string.Format("Generation: {0}", this.Generation);
         this.RemovePillars();
         this.CreateGeneration();
         this.DeadBirds.Clear();

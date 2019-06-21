@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2017
+# Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlappyClone", "FlappyClone.csproj", "{E3BA70F4-4E42-F7D8-9C19-176BF95442CD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleNeuralNetwork", "..\SimpleNeuralNetwork\SimpleNeuralNetwork\SimpleNeuralNetwork.csproj", "{ECD5018B-17DC-4997-85B3-DA8E8A5DB3AE}"
